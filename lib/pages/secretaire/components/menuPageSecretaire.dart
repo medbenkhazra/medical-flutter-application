@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart' as http;
+
 import 'package:health_app/pages/login_page.dart';
 import 'package:health_app/services/api_service.dart';
 
@@ -29,24 +29,24 @@ class MenuItems {
   static var all = <MenuItem>[home, meeting, calendar, profile];
 }
 
-class MenuPage extends StatefulWidget {
+class MenuPageSecretaire extends StatefulWidget {
   final MenuItem currentItem;
   final ValueChanged<MenuItem> onSelectedItem;
 
-  const MenuPage({
+  const MenuPageSecretaire({
     Key? key,
     required this.currentItem,
     required this.onSelectedItem,
   }) : super(key: key);
   @override
-  State<StatefulWidget> createState() => MenuPageState(key: key,currentItem: currentItem,onSelectedItem: onSelectedItem);
+  State<StatefulWidget> createState() => MenuPageSecretaireState(key: key,currentItem: currentItem,onSelectedItem: onSelectedItem);
 }
 
-class MenuPageState extends State<MenuPage> {
+class MenuPageSecretaireState extends State<MenuPageSecretaire> {
 //class MenuPage extends StatelessWidget {
   final MenuItem currentItem;
   final ValueChanged<MenuItem> onSelectedItem;
-    MenuPageState({
+    MenuPageSecretaireState({
     Key? key,
     required this.currentItem,
     required this.onSelectedItem,
@@ -120,8 +120,8 @@ class MenuPageState extends State<MenuPage> {
                 onPressed: () {},
                 child: ClipOval(
                     child: 
-                     FutureBuilder<http.Response>(
-                          future: apiService.getPatientOfUser(),
+                     FutureBuilder(
+                          future: apiService.getSecretaireOfUser(),
                           builder:
                               (BuildContext context, AsyncSnapshot snapshot) {
                             if (snapshot.connectionState !=
@@ -144,7 +144,11 @@ class MenuPageState extends State<MenuPage> {
                             ); //place your widget here
                           },
                         )
-                ),
+                )
+                /* ClipOval(
+                    child: Image.asset(
+                  "assets/images/person.jpeg",
+                )) */
               ),
             ),
             Container(

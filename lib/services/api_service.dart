@@ -1,11 +1,21 @@
 import 'dart:convert';
 
 import 'package:health_app/helpers/constant.dart';
+import 'package:health_app/models/AppointmentModel.dart';
+import 'package:health_app/models/PatientModel.dart';
+import 'package:health_app/models/dectectionModel.dart';
+import 'package:health_app/models/doctor_model.dart';
+import 'package:health_app/models/maladie.dart';
+import 'package:health_app/pages/doctor/doctorHomePage.dart';
+import 'package:health_app/pages/doctor/drawerDoctorScreen.dart';
 import 'package:health_app/pages/login_page.dart';
+import 'package:health_app/pages/patient/drawerPatientScreen.dart';
+import 'package:health_app/pages/secretaire/drawerSecretaireScreen.dart';
 import 'package:health_app/services/api_service.dart';
 import 'package:health_app/services/apiinterceptor.dart';
 import 'package:http/http.dart';
 import 'package:http_interceptor/http/intercepted_client.dart';
+import 'package:time_machine/time_machine.dart';
 
 class ApiService {
   Client client = InterceptedClient.build(interceptors: [
@@ -13,16 +23,9 @@ class ApiService {
   ]);
 
   Future<Response> getMyProfile() async {
-    print("eneted to getMyprofile funct");
-    print("this is the current token");
-    print(await LoginPageState.storage.read(key: "token"));
     String token = await LoginPageState.storage.read(key: "token") as String;
-    print("token");
-    print(token);
-    var userUrl = Uri.parse('${Constants.BASE_URL}/admin/users');
+
     var myProfileUri = Uri.parse('${Constants.BASE_URL}/account');
-    print("**********");
-    print(jsonEncode(token));
 
     final res = await get(
       myProfileUri,
@@ -32,7 +35,7 @@ class ApiService {
         'Authorization': 'Bearer ${token}'
       },
     );
-    print("get request is sent");
+
     return res;
   }
 
@@ -42,13 +45,265 @@ class ApiService {
     return res;
   }
 
+  Future<Response> makeAppointement(
+      DateTime dateTime, DoctorModel model) async {
+    var AppUrl = Uri.parse('${Constants.BASE_URL}/rendez-vous');
+
+    String token = await LoginPageState.storage.read(key: "token") as String;
+
+    var idPatient = await LoginPageState.storage.read(key: 'idPatient');
+
+    Map data = {
+      'date': Instant.dateTime(dateTime).toString(),
+      'status': "being_processed",
+      'patient': LoginPageState.currentUserData['patient'],
+      'medecin': DoctorModel(
+              id: model.id,
+              code: model.code,
+              numEmp: model.numEmp,
+              nom: model.nom,
+              prenom: model.prenom,
+              expertLevel: model.expertLevel,
+              photo: model.photo,
+              photoContentType: model.photoContentType,
+              type: model.type,
+              nbrPatients: model.nbrPatients,
+              rating: model.rating,
+              description: model.description)
+          .toJson()
+    };
+    var body = json.encode(data);
+
+    final res = await post(AppUrl,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${token}'
+        },
+        body: body
+        /* body: jsonEncode(<String, String>{
+          //'date': Instant.dateTime(dateTime).toString(),
+          'date': Instant.dateTime(dateTime).toString(),
+          'status': "being processed",
+          'patient': '{"id": $idPatient }',
+          'medecin': '{"id": ${model.id} }'
+        } */
+        );
+
+    return res;
+  }
+
+  Future<Response> getDiagnosticResult(String base64Image) async {
+    print("entred to getDiagnosticResult");
+    print(base64Image);
+    var DetectionUrl = Uri.parse('${Constants.BASE_URL}/detections');
+
+    String token = await LoginPageState.storage.read(key: "token") as String;
+    MaladieModel maladie=MaladieModel(nom: 'brain cancer');
+    DetectionModel detection=DetectionModel(id: null,photo: base64Image, photoContentType: 'image/png',maladie: maladie);
+
+    Map<String,dynamic> dataObject=detection.toJson();
+    print(dataObject);
+   /*  Map data = {
+      // 'date': Instant.dateTime(dateTime).toString(),
+      'photo': base64Image,
+      //'patient': LoginPageState.currentUserData['patient'],
+      //'medecin': DoctorModel(id: model.id, code: model.code, numEmp: model.numEmp, nom: model.nom, prenom: model.prenom, expertLevel: model.expertLevel, photo: model.photo, photoContentType: model.photoContentType, type: model.type, nbrPatients: model.nbrPatients, rating: model.rating, description: model.description).toJson()
+    }; */
+    //var body = json.encode(data);
+    var body = json.encode(dataObject);
+    final res = await post(DetectionUrl,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${token}'
+        },
+        body: body
+        /* body: jsonEncode(<String, String>{
+          //'date': Instant.dateTime(dateTime).toString(),
+          'date': Instant.dateTime(dateTime).toString(),
+          'status': "being processed",
+          'patient': '{"id": $idPatient }',
+          'medecin': '{"id": ${model.id} }'
+        } */
+        );
+
+    return res;
+  }
+
+  Future<Response> AcceptAppointement(AppointmentModel model) async {
+    var AppUrl = Uri.parse('${Constants.BASE_URL}/rendez-vous/${model!.id}');
+
+    String token = await LoginPageState.storage.read(key: "token") as String;
+
+    final res = await patch(AppUrl,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${token}'
+        },
+        body: jsonEncode(<String, String>{
+          //'date': Instant.dateTime(dateTime).toString(),
+          'id': model!.id.toString(),
+          'date': Instant.dateTime(model!.date!).toString(),
+          //'code': model!.code.toString(),
+          'status': "accepted",
+          //'patient': model!.patient!.toJson().toString(),
+          // 'medecin': model!.patient!.toJson().toString(),
+        }));
+
+    return res;
+  }
+
+  Future<Response> RefuseAppointement(AppointmentModel model) async {
+    var AppUrl = Uri.parse('${Constants.BASE_URL}/rendez-vous/${model!.id}');
+
+    String token = await LoginPageState.storage.read(key: "token") as String;
+    Map data = {
+      'id': model!.id.toString(),
+      'status': "refused",
+    };
+    var body = json.encode(data);
+
+    final res = await patch(AppUrl,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${token}'
+        },
+        body: body);
+
+    return res;
+  }
+
+  Future<Response> AdjournAppointement(AppointmentModel model) async {
+    var AppUrl = Uri.parse('${Constants.BASE_URL}/rendez-vous/${model!.id}');
+
+    String token = await LoginPageState.storage.read(key: "token") as String;
+
+    Map data = {
+      'id': model!.id.toString(),
+      'status': "adjourned",
+    };
+    var body = json.encode(data);
+
+    final res = await patch(AppUrl,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${token}'
+        },
+        body: body);
+
+    return res;
+  }
+
   Future<Response> getDoctors() async {
     var doctorsUrl = Uri.parse('${Constants.BASE_URL}/medecins');
-    
+
     String token = await LoginPageState.storage.read(key: "token") as String;
-    print("haahuwa token $token");
+
     final res = await get(
       doctorsUrl,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${token}'
+      },
+    );
+
+    return res;
+  }
+
+  Future<Response> getPatientOfUser() async {
+    var idPatient = DrawerPatientScreenState.idPatient;
+
+    var doctorsUrl = Uri.parse('${Constants.BASE_URL}/patients/$idPatient');
+
+    String token = await LoginPageState.storage.read(key: "token") as String;
+
+    final res = await get(
+      doctorsUrl,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${token}'
+      },
+    );
+
+    var data = json.decode(res.body);
+
+    return res;
+  }
+
+  Future<Response> getDoctorOfUser() async {
+    var idDoctor = DrawerDoctorScreenState.idDoctor;
+
+    var doctorUrl = Uri.parse('${Constants.BASE_URL}/medecins/$idDoctor');
+
+    String token = await LoginPageState.storage.read(key: "token") as String;
+
+    final res = await get(
+      doctorUrl,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${token}'
+      },
+    );
+
+    var data = json.decode(res.body);
+
+    return res;
+  }
+  Future<Response> getSecretaireOfUser() async {
+    var idSecretaire = DrawerSecretaireScreenState.idSecretaire;
+
+    var secretaireUrl = Uri.parse('${Constants.BASE_URL}/secretaires/$idSecretaire');
+
+    String token = await LoginPageState.storage.read(key: "token") as String;
+
+    final res = await get(
+      secretaireUrl,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${token}'
+      },
+    );
+
+    var data = json.decode(res.body);
+
+    return res;
+  }
+
+  Future<Response> getAppointments() async {
+    var AppointmentsUrl = Uri.parse('${Constants.BASE_URL}/rendez-vous');
+
+    String token = await LoginPageState.storage.read(key: "token") as String;
+
+    final res = await get(
+      AppointmentsUrl,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${token}'
+      },
+    );
+
+    return res;
+  }
+
+  Future<Response> getAppointmentsOfDoctor() async {
+    print("entred to getAppointmentsOfDoctor");
+    print(DoctorHomePageState.idDoctor);
+    var AppointmentsUrl = Uri.parse(
+        '${Constants.BASE_URL}/medecins/${DoctorHomePageState.idDoctor}');
+
+    String token = await LoginPageState.storage.read(key: "token") as String;
+
+    final res = await get(
+      AppointmentsUrl,
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -81,12 +336,8 @@ class ApiService {
 
   Future<Response> updateUser(String login, String firstName, String lastName,
       String email, String password) async {
-    print("entred to updated");
-    print("this is the current token");
-    print(await LoginPageState.storage.read(key: "token"));
     var token = await LoginPageState.storage.read(key: "token");
-    print("token");
-    print(token);
+
     var userUrl = Uri.parse('${Constants.BASE_URL}/admin/users');
     final res = await put(userUrl,
         headers: {
@@ -101,8 +352,7 @@ class ApiService {
           "email": email,
           "password": password
         }));
-    print("put request sent, maybe  hhh !!");
-    print('Token : ${token}');
+
     return res;
   }
 

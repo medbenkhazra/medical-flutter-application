@@ -29,24 +29,24 @@ class MenuItems {
   static var all = <MenuItem>[home, meeting, calendar, profile];
 }
 
-class MenuPage extends StatefulWidget {
+class MenuDoctorPage extends StatefulWidget {
   final MenuItem currentItem;
   final ValueChanged<MenuItem> onSelectedItem;
 
-  const MenuPage({
+  const MenuDoctorPage({
     Key? key,
     required this.currentItem,
     required this.onSelectedItem,
   }) : super(key: key);
   @override
-  State<StatefulWidget> createState() => MenuPageState(key: key,currentItem: currentItem,onSelectedItem: onSelectedItem);
+  State<StatefulWidget> createState() => MenuDoctorPageState(key: key,currentItem: currentItem,onSelectedItem: onSelectedItem);
 }
 
-class MenuPageState extends State<MenuPage> {
+class MenuDoctorPageState extends State<MenuDoctorPage> {
 //class MenuPage extends StatelessWidget {
   final MenuItem currentItem;
   final ValueChanged<MenuItem> onSelectedItem;
-    MenuPageState({
+    MenuDoctorPageState({
     Key? key,
     required this.currentItem,
     required this.onSelectedItem,
@@ -121,7 +121,7 @@ class MenuPageState extends State<MenuPage> {
                 child: ClipOval(
                     child: 
                      FutureBuilder<http.Response>(
-                          future: apiService.getPatientOfUser(),
+                          future: apiService.getDoctorOfUser(),
                           builder:
                               (BuildContext context, AsyncSnapshot snapshot) {
                             if (snapshot.connectionState !=

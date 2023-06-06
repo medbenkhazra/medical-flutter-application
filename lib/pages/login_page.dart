@@ -11,12 +11,14 @@ import 'package:health_app/controllers/authentificationController.dart';
 import 'package:health_app/jwt/jwtMethods.dart';
 import 'package:health_app/models/Roles.dart';
 import 'package:health_app/pages/doctor/doctorContent.dart';
+import 'package:health_app/pages/doctor/drawerDoctorScreen.dart';
 import 'package:health_app/pages/forgot_password_page.dart';
 import 'package:health_app/pages/patient/PatientHomePage.dart';
 import 'package:health_app/pages/patient/drawerPatientScreen.dart';
 import 'package:health_app/pages/patient/patientContent.dart';
 import 'package:health_app/pages/profile_page.dart';
 import 'package:health_app/pages/registration_page.dart';
+import 'package:health_app/pages/secretaire/drawerSecretaireScreen.dart';
 import 'package:health_app/pages/secretaire/secretaireContent.dart';
 import 'package:health_app/services/api_service.dart';
 import 'package:health_app/services/auth.dart';
@@ -39,6 +41,9 @@ class LoginPageState extends State<LoginPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final _loginFormKey = GlobalKey<FormState>();
+  static var username;
+  static var firstName;
+  static var lastName;
   // final _emailController = TextEditingController();
 //final _passwordController = TextEditingController();
   bool isLoading = false;
@@ -274,6 +279,9 @@ class LoginPageState extends State<LoginPage> {
 
                                         switch (res!.statusCode) {
                                           case 200:
+                                        
+
+                                          //***************** */
                                             var data = jsonDecode(res.body);
                                             Map<String, dynamic> payloadMap =
                                                 parseJwt(res.body);
@@ -315,14 +323,19 @@ class LoginPageState extends State<LoginPage> {
                                                   context,
                                                   MaterialPageRoute(
                                                       builder: (_) =>
-                                                          DoctorContent()));
+                                                          DrawerDoctorScreen()));
                                             } else if (roles
                                                 .contains("SECRETAIRE")) {
+                                                  print("entered to secretaire");
                                               Navigator.pushReplacement(
                                                   context,
                                                   MaterialPageRoute(
                                                       builder: (_) =>
-                                                          SecretaireContent()));
+                                                      DrawerSecretaireScreen()
+                                                         // SecretaireContent()
+
+                                                          )
+                                                          );
                                             } else {
                                               Navigator.pushReplacement(
                                                   context,

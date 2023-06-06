@@ -6,13 +6,14 @@ class DoctorModel {
       String numEmp;
       String nom;
       String prenom;
-      bool admin;
+    //  bool admin;
       int expertLevel;
       String photo;
       String photoContentType;
       String type;
       int nbrPatients;
-      double rating;
+      //double rating;
+      int rating;
       String description;
     //  int userId;
     //  int secretaireId;
@@ -24,7 +25,7 @@ class DoctorModel {
       
       required  this.nom,
       required  this.prenom,
-      required  this.admin,
+      //required  this.admin,
       required  this.expertLevel,
       required  this.photo,
       required  this.photoContentType,
@@ -42,13 +43,14 @@ class DoctorModel {
       String? numEmp,
       String? nom,
       String? prenom,
-      bool? admin,
+      //bool? admin,
       int? expertLevel,
       String? photo,
       String? photoContentType,
       String? type,
       int? nbrPatients,
-      double? rating,
+     // double? rating,
+      int? rating,
       String? description,
       int? userId,
       int? secretaireId,
@@ -70,7 +72,7 @@ class DoctorModel {
           numEmp: numEmp ?? this.numEmp,
           nom: nom ?? this.nom,
           prenom: prenom ?? this.prenom,
-          admin: admin ?? this.admin,
+         // admin: admin ?? this.admin,
           expertLevel: expertLevel ?? this.expertLevel,
           photo: photo ?? this.photo,
           photoContentType: photoContentType ?? this.photoContentType,
@@ -105,7 +107,7 @@ class DoctorModel {
       numEmp: json["numEmp"] == null ? null : json["numEmp"],
       nom: json["nom"] == null ? null : json["nom"],
       prenom: json["prenom"] == null ? null : json["prenom"],
-      admin: json["admin"] == null ? null : json["admin"],
+     // admin: json["admin"] == null ? null : json["admin"],
       expertLevel: json["expertLevel"] == null ? null : json["expertLevel"],
       photo: json["photo"] == null ? null : json["photo"],
       photoContentType: json["photoContentType"] == null ? null : json["photoContentType"],
@@ -134,7 +136,7 @@ class DoctorModel {
           "numEmp": numEmp == null ? null : numEmp,
           "nom": nom == null ? null : nom,
           "prenom": prenom == null ? null : prenom,
-          "admin": admin == null ? null : admin,
+         // "admin": admin == null ? null : admin,
           "expertLevel": expertLevel == null ? null : expertLevel,
           "photo": photo == null ? null : photo,
           "photoContentType": photoContentType == null ? null : photoContentType,

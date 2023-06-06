@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:health_app/helpers/constant.dart';
+import 'package:health_app/pages/login_page.dart';
 
 class HeaderWithSearchBox extends StatelessWidget {
   const HeaderWithSearchBox({
@@ -35,8 +36,8 @@ class HeaderWithSearchBox extends StatelessWidget {
             ),
             child: Row(
               children: <Widget>[
-                Text(
-                  'Welcome, \n Mohammed Benkhazra',
+                Text (
+                  'Welcome, \n ${LoginPageState.firstName} ${LoginPageState.lastName} ',
                   style: GoogleFonts.openSans(
                     color: Colors.white,
                     fontSize: 25,

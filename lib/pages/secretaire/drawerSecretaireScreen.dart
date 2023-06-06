@@ -3,23 +3,22 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_zoom_drawer/config.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
-import 'package:health_app/models/PatientModel.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:health_app/pages/login_page.dart';
-import 'package:health_app/pages/patient/menuPage.dart';
-import 'package:health_app/pages/patient/patientContent.dart';
+
+import 'package:health_app/pages/secretaire/components/menuPageSecretaire.dart';
+import 'package:health_app/pages/secretaire/secretaireContent.dart';
 import 'package:health_app/services/api_service.dart';
 
-class DrawerPatientScreen extends StatefulWidget {
+class DrawerSecretaireScreen extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => DrawerPatientScreenState();
+  State<StatefulWidget> createState() => DrawerSecretaireScreenState();
 }
 
-class DrawerPatientScreenState extends State<DrawerPatientScreen> {
+class DrawerSecretaireScreenState extends State<DrawerSecretaireScreen> {
   MenuItem currentItem = MenuItems.home;
   static var userData;
-  static String? ImageOfUser;
-  static var idPatient;
-
+  static var idSecretaire;
   //static var userName;
 
   ApiService apiService = new ApiService();
@@ -27,61 +26,16 @@ class DrawerPatientScreenState extends State<DrawerPatientScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-   /*  WidgetsBinding.instance!.addPostFrameCallback((_) async {
-      //await this.getWeatherData();
-      getActualUser().then((userData) {
-        var patient = PatientModel.fromJson(userData['patient']);
-        print("iiiiiisssssssssssssssss the patient id");
-        print(patient.id);
-        setState(() {
-          DrawerPatientScreenState.idPatient = patient.id;
-        });
-        print(DrawerPatientScreenState.idPatient);
-        DrawerPatientScreenState.idPatient = patient.id;
-        print("the actual user is iiiiiisssssssssssssssss");
-        print(patient.id);
-        storeUser();
-
-        setState(() {
-          LoginPageState.username;
-        });
-      });
-    }); */
-    
- /*  getActualUser().then((userData) {
-      
-      var patient = PatientModel.fromJson(userData['patient']);
-      print("iiiiiisssssssssssssssss the patient id");
-      print(patient.id);
-      setState(() {
-        DrawerPatientScreenState.idPatient=patient.id;
-      });
-      print(DrawerPatientScreenState.idPatient);
-      DrawerPatientScreenState.idPatient=patient.id;
-      print("the actual user is iiiiiisssssssssssssssss");
-      print(patient.id);
+    getActualUser().then((userData) {
+      print("the actual user is ${userData}");
       storeUser();
-     
       setState(() {
         LoginPageState.username;
       });
-      
-      
-    }); */
-    
+    });
   }
 
-/*     Future getPatientOfUser() async{
-    //get Doctors of this Patient
-      var res=await apiService.getPatientOfUser();
-      print("aaaaaaaaaaaaaa ${res.statusCode}");
-      var PatientOfUserData=json.decode(res.body);
-      print(PatientOfUserData);
-
-    return PatientOfUserData;
-  } */
-
-/*   void storeUser() async {
+  void storeUser() async {
     await LoginPageState.storage
         .write(key: 'id', value: userData['id'].toString());
     await LoginPageState.storage.write(key: 'login', value: userData['login']);
@@ -92,9 +46,6 @@ class DrawerPatientScreenState extends State<DrawerPatientScreen> {
     await LoginPageState.storage.write(key: 'email', value: userData['email']);
     await LoginPageState.storage
         .write(key: 'authorities', value: userData['authorities'].toString());
-    var patient = PatientModel.fromJson(userData['patient']);
-    await LoginPageState.storage
-        .write(key: 'idPatient', value: patient.id.toString());
 
     LoginPageState.username = await LoginPageState.storage.read(key: 'login');
     LoginPageState.firstName =
@@ -111,7 +62,7 @@ class DrawerPatientScreenState extends State<DrawerPatientScreen> {
     userData = json.decode(res.body);
 
     return userData;
-  } */
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -125,7 +76,7 @@ class DrawerPatientScreenState extends State<DrawerPatientScreen> {
       mainScreenScale: 0,
       mainScreen: getScreen()!,
       menuScreen: Builder(
-        builder: (context) => MenuPage(
+        builder: (context) => MenuPageSecretaire(
           currentItem: currentItem,
           onSelectedItem: (item) {
             setState(() {
@@ -141,17 +92,17 @@ class DrawerPatientScreenState extends State<DrawerPatientScreen> {
   Widget? getScreen() {
     switch (currentItem) {
       case MenuItems.home:
-        return PatientContent();
+        return SecretaireContent();
 
       case MenuItems.meeting:
-        PatientContentState.selectedIndex = 1;
-        return PatientContent();
+        SecretaireContentState.selectedIndex = 1;
+        return SecretaireContent();
       case MenuItems.calendar:
-        PatientContentState.selectedIndex = 2;
-        return PatientContent();
+        SecretaireContentState.selectedIndex = 2;
+        return SecretaireContent();
       case MenuItems.profile:
-        PatientContentState.selectedIndex = 3;
-        return PatientContent();
+        SecretaireContentState.selectedIndex = 3;
+        return SecretaireContent();
       default:
     }
   }

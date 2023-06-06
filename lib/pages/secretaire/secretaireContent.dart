@@ -2,24 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:health_app/pages/patient/PatientHomePage.dart';
 import 'package:health_app/pages/profile_page.dart';
+import 'package:health_app/pages/secretaire/secretaireHomePage.dart';
 
 class SecretaireContent extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _SecretaireContentState();
+  State<StatefulWidget> createState() => SecretaireContentState();
 }
 
-class _SecretaireContentState extends State<SecretaireContent> {
+class SecretaireContentState extends State<SecretaireContent> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  int _selectedIndex = 0;
+  static int selectedIndex = 0;
 
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index;
+      selectedIndex = index;
     });
   }
 
   List<Widget> _pages = [
-    PatientHomePage(),
+    SecretaireHomePage(),
     Scaffold(
       body: DefaultTextStyle(
           style: TextStyle(color: Colors.blue, fontSize: 20),
@@ -38,7 +39,7 @@ class _SecretaireContentState extends State<SecretaireContent> {
     return Container(
       child: Scaffold(
           key: _scaffoldKey,
-          body: _pages[_selectedIndex],
+          body: _pages[selectedIndex],
           bottomNavigationBar: SizedBox(
             height: 70,
             child: BottomNavigationBar(
@@ -48,7 +49,7 @@ class _SecretaireContentState extends State<SecretaireContent> {
               unselectedItemColor: Colors.white.withOpacity(.60),
               selectedFontSize: 14,
               unselectedFontSize: 14,
-              currentIndex: _selectedIndex,
+              currentIndex: selectedIndex,
               onTap: _onItemTapped,
               items: [
                 BottomNavigationBarItem(
@@ -70,23 +71,7 @@ class _SecretaireContentState extends State<SecretaireContent> {
               ],
             ),
           )
-          /* bottomNavigationBar: BottomNavigationBar(
-          currentIndex: _selectedIndex,
-          onTap: _onItemTapped,
-          
-          items: [
-            BottomNavigationBarItem(
-
-              icon: FaIcon(FontAwesomeIcons.houseMedical),
-              label: "Home",
-              backgroundColor: Colors.blue[800]
-               ),
-            BottomNavigationBarItem(
-              icon: FaIcon(FontAwesomeIcons.user),
-              label: "Home",
-              backgroundColor: Colors.blue[800]
-               ),
-          ]), */
+        
           ),
     );
   }

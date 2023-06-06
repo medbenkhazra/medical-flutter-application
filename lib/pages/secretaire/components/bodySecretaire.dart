@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:health_app/helpers/constant.dart';
+import 'package:health_app/models/AppointmentModel.dart';
 import 'package:health_app/models/data.dart';
 import 'package:health_app/models/doctor_model.dart';
 import 'package:health_app/pages/patient/PatientHomePage.dart';
@@ -11,83 +12,53 @@ import 'package:health_app/pages/patient/components/header_with_searchBox.dart';
 import 'package:health_app/pages/patient/components/recommendation.dart';
 import 'package:health_app/pages/patient/doctorDetails.dart';
 import 'package:health_app/pages/patient/patientContent.dart';
+import 'package:health_app/pages/secretaire/AppointmentDetailsPage.dart';
 import 'package:health_app/services/api_service.dart';
 import 'package:health_app/theme/extention.dart';
-
-import 'title_with_more_bbtn.dart';
+import 'package:time_machine/time_machine.dart' as timeMachine;
 
 //class Body extends StatelessWidget {
-class Body extends StatefulWidget {
+class BodySecretaire extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _BodyState();
+  State<StatefulWidget> createState() => _BodySecretaireState();
 }
 
-class _BodyState extends State<Body> {
-  List<DoctorModel>? doctorDataList;
+class _BodySecretaireState extends State<BodySecretaire> {
+  List<AppointmentModel>? appointmentDataList;
   Image? image;
   ApiService apiService = new ApiService();
-  var Doctorsdata;
-  bool _isVisible=false;
+  var Appointmentsdata;
+  bool _isVisible = false;
 
   @override
   void initState() {
-
     super.initState();
-    getDoctors().then((Doctorsdata) {
-      // Codec<String, String> stringToBase64 = utf8.fuse(base64);
-    //  print("premier element **/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/");
-    //  print(Doctorsdata[0]);
-    //  print("photo de premier element **/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/");[]
-    //  print(Doctorsdata[0]['photo']);
-     // Uint8List _image = base64Decode(Doctorsdata[0]['photo']);
-    
+    getAppointments().then((Appointmentsdata) {
       setState(() {
-           // doctorDataList = Doctorsdata.map((x) => DoctorModel.fromJson(x)).toList();
-           doctorDataList = (Doctorsdata as List<dynamic>).map((x) => DoctorModel.fromJson(x)).toList();
-            _isVisible=!_isVisible;
-        /* image = Image.memory(
-          _image,
-          fit: BoxFit.fill,
-        ); */
-      });
-
-    } 
-    
-    );
-
-  }
-
-/*   @override
-  void initState() {
-    doctorDataList = doctorMapList.map((x) => DoctorModel.fromJson(x)).toList();
-    super.initState();
-    //delay();
-
-    getDoctors().then((value) => null);
-
-    Future.delayed(Duration(seconds: 5)).then((value) {
-      Codec<String, String> stringToBase64 = utf8.fuse(base64);
-      print("premier element ");
-      print(Doctorsdata[0]);
-      print("photo de premier element ");
-      print(Doctorsdata[0]['photo']);
-      Uint8List _image = base64Decode(Doctorsdata[0]['photo']);
-      setState(() {
-        image = Image.memory(
-          _image,
-          fit: BoxFit.fill,
-        );
+        appointmentDataList = (Appointmentsdata as List<dynamic>)
+            .map((x) => AppointmentModel.fromJson(x))
+            .toList();
+        _isVisible = !_isVisible;
       });
     });
-  } */
-  //future async await
-  Future getDoctors() async {
-    var res = await apiService.getDoctors();
-    Doctorsdata = json.decode(res.body);
+  }
+
+  Future getAppointments() async {
+    var res = await apiService.getAppointments();
+    Appointmentsdata = json.decode(res.body);
     print(res.statusCode);
-    print("lisst od doctors !!!!!!!!!!!!!!!");
-    print(Doctorsdata);
-    return Doctorsdata;
+    print("lisst of Appointments !!!!!!!!!!!!!!!");
+    print("***zonedDateTime dart example***");
+    print(timeMachine.ZonedDateTime(timeMachine.Instant.now()));
+    print(timeMachine.Instant.now().inUtc());
+    print(timeMachine.Instant.now().inLocalZone());
+    print("///////this is the date time utc");
+   
+   // print(timeMachine.ZonedDateTime(json.decode("2022-01-01T22:41:32Z")).toDateTimeUtc());
+    print("datetime now");
+    print(DateTime.now());
+    print(Appointmentsdata);
+    return Appointmentsdata;
   }
 
   void delay() async {
@@ -96,7 +67,7 @@ class _BodyState extends State<Body> {
 
   Color randomColor() {
     var random = Random();
-      final colorList = [
+    final colorList = [
       Theme.of(context).primaryColor,
       LightColor.orange,
       LightColor.green,
@@ -124,14 +95,14 @@ class _BodyState extends State<Body> {
         children: <Widget>[
           HeaderWithSearchBox(size: size),
           // TitleWithMoreBtn(title: "Doctors", press: () {}),
-          Recomendation(),
-          SizedBox(
+          //  Recomendation(),
+          /*   SizedBox(
             height: 10,
-          ),
+          ), */
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Text("Doctors", style: TextStyles.title.bold),
+              Text("Requests", style: TextStyles.title.bold),
               IconButton(
                   icon: Icon(
                     Icons.sort,
@@ -144,8 +115,8 @@ class _BodyState extends State<Body> {
           SizedBox(
             height: 20,
           ),
-          getdoctorWidgetList(),
-         /*  Container(
+          getAppointmentsWidgetList(),
+          /*  Container(
             child: (image != null)
                 ? image
                 : FlutterLogo(
@@ -159,20 +130,22 @@ class _BodyState extends State<Body> {
     );
   }
 
-  Widget getdoctorWidgetList() {
+  Widget getAppointmentsWidgetList() {
     return Visibility(
       visible: _isVisible,
       child: Column(
-          children: (doctorDataList!=null) ?doctorDataList!.map((x) {
-        return _doctorTile(x);
-      }
-      ).toList(): [Text('data not loaded yet'),
-    Text('data not loaded yet'),]
-      ),
+          children: (appointmentDataList != null)
+              ? appointmentDataList!.map((x) {
+                  return _appointmentTile(x);
+                }).toList()
+              : [
+                  Text('data not loaded yet'),
+                  Text('data not loaded yet'),
+                ]),
     );
   }
 
-  Widget _doctorTile(DoctorModel model) {
+  Widget _appointmentTile(AppointmentModel model) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       decoration: BoxDecoration(
@@ -202,20 +175,21 @@ class _BodyState extends State<Body> {
               width: 55,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
-                //# colors : 5c8fe6 86acec 417ee4
+                //possible colors : 5c8fe6 86acec 417ee4
                 color: Color(0xFF417ee4),
               ),
               child: Image.memory(
-                base64Decode(model.photo),
+                //attention
+                base64Decode(model.patient!.photo!),
                 height: 50,
                 width: 50,
                 fit: BoxFit.contain,
               ),
             ),
           ),
-          title: Text("Dr ${model.nom} ${model.prenom}", style: TextStyles.title.bold),
+          title: Text("demande ${model.code}", style: TextStyles.title.bold),
           subtitle: Text(
-            model.type,
+            model.status!,
             style: TextStyles.bodySm.subTitleColor.bold,
           ),
           trailing: Icon(
@@ -226,10 +200,14 @@ class _BodyState extends State<Body> {
         ),
       ).ripple(
         () {
-          Navigator.of(context).push(MaterialPageRoute(
-            builder: (_)=> DoctorDetailsPage(model: model)
+            Navigator.of(context).push(MaterialPageRoute(
+            builder: (_)=> AppointmentDetailsPage(model: model)
             )
             );
+         /*   Navigator.of(context).push(MaterialPageRoute(
+            builder: (_)=> AppointmentDetailsPage(model: model)
+            )
+            ); */
           //Navigator.pushNamed(context, "/DetailPage", arguments: model);
         },
         borderRadius: BorderRadius.all(Radius.circular(20)),

@@ -53,6 +53,13 @@ dependencies:
   flutter_svg: ^1.0.3
   flutter_zoom_drawer: ^3.0.1
   get: ^4.6.1
+  flutter_rating_bar: ^4.0.0
+  flutter_datetime_picker: ^1.5.1
+  time_machine: ^0.9.17
+  percent_indicator: ^4.0.1
+  cached_network_image: ^3.2.0
+  permission_handler: ^9.2.0
+  table_calendar: ^3.0.5
   
   
 
@@ -83,7 +90,7 @@ flutter:
     - assets/lottie/91148-vital-signs.json
     - assets/lottie/textAnimation.json
     - assets/lottie/login.json
-    - assets/images/person.jpeg
+    - assets/images/bgc.jpg
     - assets/images/logo.png
     - assets/icons/menu.svg
     - assets/icons/search.svg
@@ -92,6 +99,7 @@ flutter:
     - assets/images/doctor_3.png
     - assets/images/doctor_4.png
     - assets/images/doctor.png
+    - assets/images/brain.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

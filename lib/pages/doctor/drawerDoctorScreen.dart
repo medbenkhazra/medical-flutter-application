@@ -4,21 +4,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_zoom_drawer/config.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 import 'package:health_app/models/PatientModel.dart';
+import 'package:health_app/pages/doctor/doctorContent.dart';
 import 'package:health_app/pages/login_page.dart';
 import 'package:health_app/pages/patient/menuPage.dart';
 import 'package:health_app/pages/patient/patientContent.dart';
 import 'package:health_app/services/api_service.dart';
 
-class DrawerPatientScreen extends StatefulWidget {
+class DrawerDoctorScreen extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => DrawerPatientScreenState();
+  State<StatefulWidget> createState() => DrawerDoctorScreenState();
 }
 
-class DrawerPatientScreenState extends State<DrawerPatientScreen> {
+class DrawerDoctorScreenState extends State<DrawerDoctorScreen> {
   MenuItem currentItem = MenuItems.home;
   static var userData;
   static String? ImageOfUser;
-  static var idPatient;
+  static var idDoctor;
 
   //static var userName;
 
@@ -141,17 +142,17 @@ class DrawerPatientScreenState extends State<DrawerPatientScreen> {
   Widget? getScreen() {
     switch (currentItem) {
       case MenuItems.home:
-        return PatientContent();
+        return DoctorContent();
 
       case MenuItems.meeting:
-        PatientContentState.selectedIndex = 1;
-        return PatientContent();
+        DoctorContentState.selectedIndex = 1;
+        return DoctorContent();
       case MenuItems.calendar:
-        PatientContentState.selectedIndex = 2;
-        return PatientContent();
+        DoctorContentState.selectedIndex = 2;
+        return DoctorContent();
       case MenuItems.profile:
-        PatientContentState.selectedIndex = 3;
-        return PatientContent();
+        DoctorContentState.selectedIndex = 3;
+        return DoctorContent();
       default:
     }
   }
